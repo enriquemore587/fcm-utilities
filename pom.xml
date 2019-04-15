@@ -13,10 +13,10 @@
         <maven-compiler-version>3.3</maven-compiler-version>
 
         <!-- Spring -->
-        <spring-framework.version>3.2.16.RELEASE</spring-framework.version>
+        <spring-framework.version>4.3.12.RELEASE</spring-framework.version>
 
         <!-- App Engine -->
-        <appengine.version>1.9.32</appengine.version>
+        <appengine.version>1.9.68</appengine.version>
 
         <!-- Hibernate -->
         <hibernate-version>4.2.21.Final</hibernate-version>
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>com.bbva.intranet</groupId>
             <artifactId>utilities</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.2</version>
             <scope>provided</scope>
         </dependency>
 
@@ -81,29 +81,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>${spring-framework.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Appengine -->
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>${appengine.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Commons -->
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <version>3.2.1</version>
             <scope>provided</scope>
         </dependency>
 
