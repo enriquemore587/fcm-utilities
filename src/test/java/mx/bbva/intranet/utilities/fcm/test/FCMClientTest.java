@@ -53,7 +53,7 @@ public class FCMClientTest {
         fcmClient.setUrlNotificationSend("https://fcm.googleapis.com/fcm/send");
         fcmClient.setUrlAppInstanceInfo("https://iid.googleapis.com/iid/info/{IID_TOKEN}{params}");
         fcmClient.setUrlTopicBatch("https://iid.googleapis.com/iid/v1:");
-        fcmClient.setUrlNotificationGroup("https://fcm.googleapis.com/fcm/notification");
+        fcmClient.setUrlNotificationGroup("https://fcm.googleapis.com/fcm/notifier");
 
         return fcmClient;
     }
