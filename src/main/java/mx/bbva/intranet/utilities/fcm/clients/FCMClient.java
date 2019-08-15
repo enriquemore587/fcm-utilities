@@ -5,6 +5,8 @@ import com.bbva.intranet.utilities.HttpClientSimpleUtility;
 import com.bbva.intranet.utilities.exceptions.HttpClientException;
 import com.bbva.intranet.utilities.vos.HttpClientData;
 import com.bbva.intranet.utilities.vos.HttpResponse;
+import mx.bbva.intranet.utilities.fcm.exceptions.FCMException;
+import mx.bbva.intranet.utilities.fcm.exceptions.FCMPushNotificationException;
 import mx.bbva.intranet.utilities.fcm.vos.fcm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +34,7 @@ public class FCMClient {
     private String urlTopicRelationshipAppInstance;
     private String urlTopicBatch;
 
-    public FCMResponse sendPushNotification(FCMNotification fcmNotification) {
+    public FCMResponse sendPushNotification(FCMNotification fcmNotification) throws FCMException, FCMPushNotificationException {
         FCMResponse fcmResponse = null;
         try {
             HttpResponse httpResponse;
@@ -44,24 +46,20 @@ public class FCMClient {
             logger.info(httpResponse.getOutput());
 
             // Se evalua la respuesta recuperada del Servicio de GCM
-            fcmResponse = (FCMResponse) GsonUtility.jsonToObject(httpResponse.getOutput(), null, FCMResponse.class);
-//            if (fcmResponse != null) {
-//                if (fcmResponse.getSuccess() != null && fcmResponse.getSuccess() > 0) {
-//                    sent = true;
-//                } else if (fcmResponse.getMessageId() != null && fcmResponse.getMessageId() != null) {
-//                    sent = true;
-//                }
-//            }
-
+            if (httpResponse.getCode() == 200 && httpResponse.getContentType().contains("application/json")) {
+                fcmResponse = (FCMResponse) GsonUtility.jsonToObject(httpResponse.getOutput(), null, FCMResponse.class);
+            } else {
+                throw new FCMPushNotificationException(String.format("Push notification cannot be sent. code [%d] message [%s]",
+                        httpResponse.getCode(), httpResponse.getMessage()));
+            }
         } catch (HttpClientException e) {
-            e.printStackTrace();
+            throw new FCMException(e.getMessage());
         }
 
-//        return sent;
         return fcmResponse;
     }
 
-    public FCMAppInstanceInfo invokeServiceAppInstanceInfo(String instanceId, boolean details) {
+    public FCMAppInstanceInfo invokeServiceAppInstanceInfo(String instanceId, boolean details) throws FCMException {
         FCMAppInstanceInfo fcmAppInstanceInfo = null;
         try {
             HttpResponse httpResponse;
@@ -80,12 +78,12 @@ public class FCMClient {
             fcmAppInstanceInfo = validateFCMAppInstanceInfoCodeResponse(httpResponse);
 
         } catch (HttpClientException e) {
-            e.printStackTrace();
+            throw new FCMException(e.getMessage());
         }
         return fcmAppInstanceInfo;
     }
 
-    public FCMTopic invokeFCMTopicRelationshipWithAppInstance(FCMTopic fcmTopic) {
+    public FCMTopic invokeFCMTopicRelationshipWithAppInstance(FCMTopic fcmTopic) throws FCMException {
         FCMTopic fcmTopicResult = null;
         try {
             HttpResponse httpResponse;
@@ -101,12 +99,12 @@ public class FCMClient {
 
             fcmTopicResult = validateFCMTopicCodeResponse(httpResponse);
         } catch (HttpClientException e) {
-            e.printStackTrace();
+            throw new FCMException(e.getMessage());
         }
         return fcmTopicResult;
     }
 
-    public FCMTopic invokeFCMTopicRelationshipWithAppInstances(FCMTopic fcmTopic) {
+    public FCMTopic invokeFCMTopicRelationshipWithAppInstances(FCMTopic fcmTopic) throws FCMException {
         FCMTopic fcmTopicResult = null;
         try {
             HttpResponse httpResponse;
@@ -121,12 +119,12 @@ public class FCMClient {
 
             fcmTopicResult = validateFCMTopicCodeResponse(httpResponse);
         } catch (HttpClientException e) {
-            e.printStackTrace();
+            throw new FCMException(e.getMessage());
         }
         return fcmTopicResult;
     }
 
-    public FCMDeviceGroup invokeFCMGroupService(FCMDeviceGroup fcmDeviceGroup) {
+    public FCMDeviceGroup invokeFCMGroupService(FCMDeviceGroup fcmDeviceGroup) throws FCMException {
         FCMDeviceGroup fcmDeviceGroupResponse = null;
         try {
             HttpResponse httpResponse;
@@ -143,7 +141,7 @@ public class FCMClient {
                 fcmDeviceGroupResponse.setOperation(fcmDeviceGroup.getOperation());
             }
         } catch (HttpClientException e) {
-            e.printStackTrace();
+            throw new FCMException(e.getMessage());
         }
 
         return fcmDeviceGroupResponse;
@@ -191,6 +189,7 @@ public class FCMClient {
         httpClientData.setContentType(contentType);
         httpClientData.setEncoding(encoding);
         httpClientData.setTimeout(timeout);
+        logger.info(String.format("Headers: %s", headers.toString()));
         httpClientData.setHeaders(headers);
 
         // Se invoca al Servicio de GCM para envio de Notificaciones

@@ -2,10 +2,7 @@ package mx.bbva.intranet.utilities.fcm.test;
 
 import mx.bbva.intranet.utilities.fcm.FCMUtility;
 import mx.bbva.intranet.utilities.fcm.clients.FCMClient;
-import mx.bbva.intranet.utilities.fcm.exceptions.FCMGroupException;
-import mx.bbva.intranet.utilities.fcm.exceptions.FCMInstanceIdEmptyException;
-import mx.bbva.intranet.utilities.fcm.exceptions.FCMPushNotificationException;
-import mx.bbva.intranet.utilities.fcm.exceptions.FCMTopicException;
+import mx.bbva.intranet.utilities.fcm.exceptions.*;
 import mx.bbva.intranet.utilities.fcm.vos.fcm.FCMAppInstanceInfo;
 import mx.bbva.intranet.utilities.fcm.vos.fcm.FCMNotification;
 import mx.bbva.intranet.utilities.fcm.vos.fcm.FCMTopic;
@@ -81,7 +78,7 @@ public class FCMClientTest {
 
         try {
             FCMUtility.sendPushNotification(fcmClient, fcmNotification);
-        } catch (FCMPushNotificationException e) {
+        } catch (FCMPushNotificationException | FCMException e) {
             e.printStackTrace();
         }
     }
@@ -90,7 +87,11 @@ public class FCMClientTest {
         FCMClient fcmClient = initFCMClient();
 
 //        FCMAppInstanceInfo fcmAppInstanceInfo = fcmClient.invokeServiceAppInstanceInfo("cr--ouTuPj8:APA91bHAKFsyRDPmWDHylTT29S7wyRZW7elBNPHiX66Fxtwg4PrE-9xXtHmixPBgHoHtr3A5_1A8xPQnTunEsRafb6rO41LLKVdnKwhxsraajG_pjeVfQ5wr6AroGdCKyW2jN7kqMrvt", true);
-        FCMAppInstanceInfo fcmAppInstanceInfo = fcmClient.invokeServiceAppInstanceInfo("c9kSwK58Xjs:APA91bEuR8x-_fxg4Ato1eWCtXzu8tczJtbHoauORGMZzIgXTsraSn4jN3QKXYIxtVNvAhMYTWTbDA65U4998WzbAeQkf60i1tIelUXR3WE_OiefAy1qrCnz6re0K2vij03rIduRtnHi", true);
+        try {
+            FCMAppInstanceInfo fcmAppInstanceInfo = fcmClient.invokeServiceAppInstanceInfo("c9kSwK58Xjs:APA91bEuR8x-_fxg4Ato1eWCtXzu8tczJtbHoauORGMZzIgXTsraSn4jN3QKXYIxtVNvAhMYTWTbDA65U4998WzbAeQkf60i1tIelUXR3WE_OiefAy1qrCnz6re0K2vij03rIduRtnHi", true);
+        } catch (FCMException e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -100,9 +101,7 @@ public class FCMClientTest {
 
         try {
             FCMUtility.addInstanceIdFromTopic(fcmClient, "c9kSwK58Xjs:APA91bEuR8x-_fxg4Ato1eWCtXzu8tczJtbHoauORGMZzIgXTsraSn4jN3QKXYIxtVNvAhMYTWTbDA65U4998WzbAeQkf60i1tIelUXR3WE_OiefAy1qrCnz6re0K2vij03rIduRtnHi", "EVERYONE");
-        } catch (FCMInstanceIdEmptyException e) {
-            e.printStackTrace();
-        } catch (FCMTopicException e) {
+        } catch (FCMInstanceIdEmptyException | FCMException | FCMTopicException e) {
             e.printStackTrace();
         }
     }
@@ -112,9 +111,7 @@ public class FCMClientTest {
 
         try {
             FCMUtility.removeInstanceIdFromTopic(fcmClient, "c9kSwK58Xjs:APA91bEuR8x-_fxg4Ato1eWCtXzu8tczJtbHoauORGMZzIgXTsraSn4jN3QKXYIxtVNvAhMYTWTbDA65U4998WzbAeQkf60i1tIelUXR3WE_OiefAy1qrCnz6re0K2vij03rIduRtnHi", "EVERYONE");
-        } catch (FCMInstanceIdEmptyException e) {
-            e.printStackTrace();
-        } catch (FCMTopicException e) {
+        } catch (FCMInstanceIdEmptyException | FCMException | FCMTopicException e) {
             e.printStackTrace();
         }
     }
@@ -133,7 +130,7 @@ public class FCMClientTest {
         try {
             String notificationKey = FCMUtility.createDeviceGroup(fcmClient, notificationKeyName, instanceIds);
             System.out.println(notificationKey);
-        } catch (FCMGroupException e) {
+        } catch (FCMGroupException | FCMException e) {
             e.printStackTrace();
         }
     }
@@ -145,9 +142,7 @@ public class FCMClientTest {
 
         try {
             FCMUtility.addInstanceIdFromTopic(fcmClient, notificationKey, "group-topic");
-        } catch (FCMInstanceIdEmptyException e) {
-            e.printStackTrace();
-        } catch (FCMTopicException e) {
+        } catch (FCMInstanceIdEmptyException | FCMException | FCMTopicException e) {
             e.printStackTrace();
         }
     }

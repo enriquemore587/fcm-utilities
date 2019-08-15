@@ -25,7 +25,7 @@ public abstract class FCMUtility {
     public static final String PUT = "put";
     public static final String DELETE = "delete";
 
-    public static void sendPushNotification(FCMClient fcmClient, FCMNotification fcmNotification) throws FCMPushNotificationException {
+    public static void sendPushNotification(FCMClient fcmClient, FCMNotification fcmNotification) throws FCMPushNotificationException, FCMException {
         FCMResponse fcmResponse = fcmClient.sendPushNotification(fcmNotification);
         if (fcmResponse != null) {
             if (fcmResponse.getFailure() != null && fcmResponse.getFailure() > 0) {
@@ -39,7 +39,7 @@ public abstract class FCMUtility {
         }
     }
 
-    public static String createDeviceGroup(FCMClient fcmClient, String notificationKeyName, List<String> instanceIds) throws FCMGroupException {
+    public static String createDeviceGroup(FCMClient fcmClient, String notificationKeyName, List<String> instanceIds) throws FCMGroupException, FCMException {
         String notificationKey;
         FCMDeviceGroup fcmDeviceGroup = buildDeviceGroup(notificationKeyName, FCMOperation.CREATE_GROUP, instanceIds, null);
         fcmDeviceGroup = fcmClient.invokeFCMGroupService(fcmDeviceGroup);
@@ -51,7 +51,7 @@ public abstract class FCMUtility {
         }
     }
 
-    public static String addDeviceGroup(FCMClient fcmClient, String notificationKeyName, String notificationKey, List<String> instanceIds) throws FCMGroupException {
+    public static String addDeviceGroup(FCMClient fcmClient, String notificationKeyName, String notificationKey, List<String> instanceIds) throws FCMGroupException, FCMException {
         FCMDeviceGroup fcmDeviceGroup = buildDeviceGroup(notificationKeyName, FCMOperation.ADD_TO_GROUP, instanceIds, notificationKey);
         fcmDeviceGroup = fcmClient.invokeFCMGroupService(fcmDeviceGroup);
         if (fcmDeviceGroup.getNotificationKey() == null && fcmDeviceGroup.getNotificationKey().isEmpty()) {
@@ -62,7 +62,7 @@ public abstract class FCMUtility {
         }
     }
 
-    public static String removeDeviceGroup(FCMClient fcmClient, String notificationKeyName, String notificationKey, List<String> instanceIds) throws FCMGroupException {
+    public static String removeDeviceGroup(FCMClient fcmClient, String notificationKeyName, String notificationKey, List<String> instanceIds) throws FCMGroupException, FCMException {
         FCMDeviceGroup fcmDeviceGroup = buildDeviceGroup(notificationKeyName, FCMOperation.REMOVE_OF_GROUP, instanceIds, notificationKey);
         fcmDeviceGroup = fcmClient.invokeFCMGroupService(fcmDeviceGroup);
         if (fcmDeviceGroup.getNotificationKey() == null && fcmDeviceGroup.getNotificationKey().isEmpty()) {
@@ -107,7 +107,7 @@ public abstract class FCMUtility {
 //        }
 //    }
 
-    public static void invokeTopicRelationship(FCMClient fcmClient, FCMTopic fcmTopic) throws FCMTopicException {
+    public static void invokeTopicRelationship(FCMClient fcmClient, FCMTopic fcmTopic) throws FCMTopicException, FCMException {
         if (fcmTopic.getInstanceId() != null && !fcmTopic.getInstanceId().isEmpty()) {
             fcmTopic = fcmClient.invokeFCMTopicRelationshipWithAppInstance(fcmTopic);
         } else if (fcmTopic.getRegistrationTokens() != null && !fcmTopic.getRegistrationTokens().isEmpty()) {
@@ -118,7 +118,7 @@ public abstract class FCMUtility {
         }
     }
 
-    public static boolean verifyIsAssignedToTopic(FCMClient fcmClient, String registrationId, String topicName) throws FCMInstanceIdException, FCMInstanceIdEmptyException {
+    public static boolean verifyIsAssignedToTopic(FCMClient fcmClient, String registrationId, String topicName) throws FCMInstanceIdException, FCMInstanceIdEmptyException, FCMException {
         // Verify if the User registrationId already exists in the Topic
         logger.info(String.format("Checking if exists in the Topic [%s]", topicName));
         if (registrationId != null && !registrationId.isEmpty()) {
@@ -144,7 +144,7 @@ public abstract class FCMUtility {
         }
     }
 
-    public static List<String> cleanInstanceIdOfTopics(FCMClient fcmClient, String registrationId) throws FCMInstanceIdException, FCMInstanceIdEmptyException {
+    public static List<String> cleanInstanceIdOfTopics(FCMClient fcmClient, String registrationId) throws FCMInstanceIdException, FCMInstanceIdEmptyException, FCMException {
         List<String> unsubscribeTopics = new ArrayList<String>();
         logger.info(String.format("The registrationId [%s] will be removed of whole Topics subscribed...", registrationId));
         if (registrationId != null && !registrationId.isEmpty()) {
@@ -175,7 +175,7 @@ public abstract class FCMUtility {
         }
     }
 
-    public static Map<String, List<String>> getTopicsOfInstanceId(FCMClient fcmClient, String registrationId) throws FCMInstanceIdException, FCMInstanceIdEmptyException {
+    public static Map<String, List<String>> getTopicsOfInstanceId(FCMClient fcmClient, String registrationId) throws FCMInstanceIdException, FCMInstanceIdEmptyException, FCMException {
         Map<String, List<String>> resume = new HashMap<>();
         if (registrationId != null && !registrationId.isEmpty()) {
             logger.info(String.format("The registrationId [%s] will check their subscribed Topics...", registrationId));
@@ -197,7 +197,7 @@ public abstract class FCMUtility {
         }
     }
 
-    public static void removeInstanceIdFromTopic(FCMClient fcmClient, String registrationId, String topic) throws FCMInstanceIdEmptyException, FCMTopicException {
+    public static void removeInstanceIdFromTopic(FCMClient fcmClient, String registrationId, String topic) throws FCMInstanceIdEmptyException, FCMTopicException, FCMException {
 //        boolean done = false;
         if (registrationId != null && !registrationId.isEmpty()) {
             List<String> registrationIds = new ArrayList<String>();
@@ -217,7 +217,7 @@ public abstract class FCMUtility {
         }
     }
 
-    public static void removeInstanceIdsFromTopic(FCMClient fcmClient, List<String> instanceIds, String topic) throws FCMInstanceIdEmptyException, FCMTopicException {
+    public static void removeInstanceIdsFromTopic(FCMClient fcmClient, List<String> instanceIds, String topic) throws FCMInstanceIdEmptyException, FCMTopicException, FCMException {
 //        boolean done = false;
         if (instanceIds != null && !instanceIds.isEmpty()) {
             FCMTopic fcmTopic = new FCMTopic(FCMOperation.REMOVE_BATCH_OF_TOPIC, topic, instanceIds);
@@ -235,7 +235,7 @@ public abstract class FCMUtility {
         }
     }
 
-    public static void addInstanceIdFromTopic(FCMClient fcmClient, String registrationId, String topic) throws FCMInstanceIdEmptyException, FCMTopicException {
+    public static void addInstanceIdFromTopic(FCMClient fcmClient, String registrationId, String topic) throws FCMInstanceIdEmptyException, FCMTopicException, FCMException {
 //        boolean done = false;
         if (registrationId != null && !registrationId.isEmpty()) {
             List<String> registrationIds = new ArrayList<String>();
@@ -256,7 +256,7 @@ public abstract class FCMUtility {
         }
     }
 
-    public static void addInstanceIdsFromTopic(FCMClient fcmClient, List<String> instanceIds, String topic) throws FCMInstanceIdEmptyException, FCMTopicException {
+    public static void addInstanceIdsFromTopic(FCMClient fcmClient, List<String> instanceIds, String topic) throws FCMInstanceIdEmptyException, FCMTopicException, FCMException {
 //        boolean done = false;
         if (instanceIds != null && !instanceIds.isEmpty()) {
             FCMTopic fcmTopic = new FCMTopic(FCMOperation.ADD_BATCH_TO_TOPIC, topic, instanceIds);
